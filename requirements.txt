@@ -1,0 +1,8 @@
+torch>=2.1
+torchvision>=0.16
+numpy>=1.26
+pdfminer.six>=20231228
+tensorboard>=2.16
+matplotlib>=3.8
+scikit-learn>=1.4
+
