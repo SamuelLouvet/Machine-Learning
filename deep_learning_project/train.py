@@ -1,6 +1,5 @@
 import argparse
 import os
-import sqlite3
 from pathlib import Path
 
 import numpy as np
@@ -38,7 +37,6 @@ def parse_args():
     parser.add_argument('--device', default='cuda' if torch.cuda.is_available() else 'cpu')
     parser.add_argument('--out-dir', default='./artifacts')
     parser.add_argument('--save-best-only', action='store_true')
-    parser.add_argument('--log-sqlite', action='store_true', help='Log metrics to a SQLite DB')
     parser.add_argument('--tensorboard', action='store_true', help='Enable TensorBoard logging')
     return parser.parse_args()
 
@@ -77,28 +75,11 @@ def evaluate(model, criterion, loader, device):
     return avg_loss, acc, labels_np, probs_np, preds_np
 
 
-def maybe_init_sqlite(db_path: str):
-    conn = sqlite3.connect(db_path)
-    cur = conn.cursor()
-    cur.execute(
-        'CREATE TABLE IF NOT EXISTS metrics (epoch INTEGER, split TEXT, loss REAL, acc REAL)'
-    )
-    conn.commit()
-    return conn
-
-
-def log_sqlite(conn, epoch: int, split: str, loss: float, acc: float):
-    cur = conn.cursor()
-    cur.execute('INSERT INTO metrics(epoch, split, loss, acc) VALUES (?, ?, ?, ?)', (epoch, split, loss, acc))
-    conn.commit()
-
-
 def main():
     args = parse_args()
     ensure_dir(args.out_dir)
 
     writer = SummaryWriter(log_dir=os.path.join(args.out_dir, 'tb')) if args.tensorboard else None
-    conn = maybe_init_sqlite(os.path.join(args.out_dir, 'metrics.sqlite')) if args.log_sqlite else None
 
     train_loader, valid_loader, test_loader, classes = create_data(
         train_dir=args.train_dir,
@@ -171,10 +152,6 @@ def main():
             writer.add_scalar('Loss/valid', valid_loss, epoch)
             writer.add_scalar('Acc/valid', valid_acc, epoch)
 
-        if conn:
-            log_sqlite(conn, epoch, 'train', train_loss, train_acc)
-            log_sqlite(conn, epoch, 'valid', valid_loss, valid_acc)
-
         history["train_loss"].append(train_loss)
         history["train_acc"].append(train_acc)
         history["valid_loss"].append(valid_loss)
@@ -215,9 +192,7 @@ def main():
         writer.add_scalar('Loss/test', test_loss, args.epochs)
         writer.add_scalar('Acc/test', test_acc, args.epochs)
         writer.close()
-    if conn:
-        log_sqlite(conn, args.epochs, 'test', test_loss, test_acc)
-        conn.close()
+
 
     # Visualization outputs
     # 1) Curves
@@ -292,5 +267,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
