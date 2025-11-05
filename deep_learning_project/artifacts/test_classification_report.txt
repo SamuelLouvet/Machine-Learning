@@ -1,0 +1,21 @@
+============================================================
+FACE DETECTION TEST RESULTS
+============================================================
+
+Model: deep_learning_project/artifacts/best_model.pth
+Test samples: 7628
+Decision threshold: 0.8566
+
+              precision    recall  f1-score   support
+
+           0     0.9716    0.9963    0.9838      6831
+           1     0.9599    0.7503    0.8423       797
+
+    accuracy                         0.9706      7628
+   macro avg     0.9657    0.8733    0.9130      7628
+weighted avg     0.9704    0.9706    0.9690      7628
+
+
+Confusion Matrix:
+[[6806   25]
+ [ 199  598]]
