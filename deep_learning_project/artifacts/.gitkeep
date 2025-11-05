@@ -1,0 +1,3 @@
+# This file ensures the artifacts directory is tracked by git
+# All files generated during training/testing will be ignored by .gitignore
+# but the directory structure is preserved

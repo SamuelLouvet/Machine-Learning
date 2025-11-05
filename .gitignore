@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Model artifacts (too large for git)
+*.pth
+*.pt
+
+# Database files (generated, not source)
+*.db
+*.sqlite
+
+# Training outputs (generated)
+deep_learning_project/artifacts/*.png
+deep_learning_project/artifacts/*.txt
+deep_learning_project/artifacts/*.csv
+deep_learning_project/artifacts/test_errors/
+deep_learning_project/artifacts/tb/
+
+# Temporary files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# PDF (course material, not needed in repo)
+*.pdf

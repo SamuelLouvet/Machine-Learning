@@ -82,6 +82,22 @@ def main():
     args = parse_args()
     ensure_dir(args.out_dir)
 
+    device = torch.device(args.device)
+
+    # Display device information
+    print(f"=" * 60)
+    print(f"Training Configuration")
+    print(f"=" * 60)
+    print(f"Device: {device}")
+    if torch.cuda.is_available():
+        print(f"GPU Name: {torch.cuda.get_device_name(0)}")
+        print(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
+    print(f"Batch size: {args.batch_size}")
+    print(f"Epochs: {args.epochs}")
+    print(f"Learning rate: {args.lr}")
+    print(f"=" * 60)
+    print()
+
     writer = SummaryWriter(log_dir=os.path.join(args.out_dir, 'tb')) if args.tensorboard else None
     
     # Initialize database
@@ -116,7 +132,6 @@ def main():
         augment=args.augment,
     )
 
-    device = torch.device(args.device)
     model = Net().to(device)
     # Optionally compute class weights from training subset to counter imbalance
     if args.class_weighted_loss:
